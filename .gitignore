@@ -1,0 +1,4 @@
+/frontend/generated/
+src/main/dev-bundle
+frontend
+vaadin-javascript-loader.iml
