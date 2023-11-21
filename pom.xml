@@ -4,7 +4,7 @@
 
     <groupId>org.parttio</groupId>
     <artifactId>vaadin-js-loader</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Dynamic JavaScript loader for Vaadin</name>
     <description>Dynamic JavaScript loader for Vaadin using local, cdnjs.com or unpkg.com.</description>
     <url>https://github.com/parttio/vaadin-js-loader</url>
@@ -38,7 +38,7 @@
         <url>https://github.com/parttio/vaadin-js-loader</url>
         <connection>scm:git:git://github.com/parttio/vaadin-js-loader.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:/parttio/vaadin-js-loader.git</developerConnection>
-        <tag>vaadin-js-loader-0.9.0</tag>
+        <tag>vaadin-js-loader-1.0.0</tag>
     </scm>
 
     <distributionManagement>
