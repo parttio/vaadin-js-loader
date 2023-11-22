@@ -19,8 +19,33 @@ public class JSLoader {
     //Follow:  unpkg.com/:package@:version
     public static final String URL_PATTERN_UNPKGCOM = "https://unpkg.com/{library}@{version}";
 
+    public static final String URL_PATTERN_UNPKGCOM_FILES = "https://unpkg.com/{library}@{version}/{file}";
+
     /**
-     * Loads a JavaScript library dynamically from given CDN.
+     * Loads a JavaScript and CSS files dynamically from given CDN URL.
+     *
+     *  Pattern is used to construct the URL for the library. The pattern can
+     *  contain named placeholders <code>{library}</code>for the library name and <code>{version}</code> for the version. The
+     *  placeholders are replaced with the actual values before the URL is
+     *  loaded.
+     *
+     *  E.g. for unpkg.com:
+     *  <code>https://unpkg.com/{library}@{version}/dist/{library}</code>
+     *
+     * @deprecated Use {{@link #loadFiles(Component, String, String, String, String...)}} instead.
+     *
+     * @param component       the UI instance to load the library for
+     * @param urlPattern  the base URL pattern to use for loading the library
+     * @param libraryName     the name of the library to load
+     * @param version         the version of the library to load
+     * @param libraryFile     the JavaScript file to load or null
+     */
+    public static void load(Component component, String libraryName, String version,  String libraryFile, String urlPattern) {
+        loadFiles(component,urlPattern,libraryName, version, libraryFile);
+    }
+
+    /**
+     * Loads a JavaScript and CSS files dynamically from given CDN URL.
      *
      *  Pattern is used to construct the URL for the library. The pattern can
      *  contain named placeholders <code>{library}</code>for the library name and <code>{version}</code> for the version. The
@@ -32,12 +57,12 @@ public class JSLoader {
      *
      *
      * @param component       the UI instance to load the library for
+     * @param urlPattern  the base URL pattern to use for loading the library
      * @param libraryName     the name of the library to load
      * @param version         the version of the library to load
-     * @param file         the file of the library to load
-     * @param urlPattern  the base URL pattern to use for loading the library
+     * @param file            the files of the library to load
      */
-    public static void load(Component component, String libraryName, String version, String file, String urlPattern) {
+    public static void loadFiles(Component component, String urlPattern, String libraryName, String version, String... file) {
         assert component != null : "Component cannot be null";
         assert libraryName != null && !libraryName.isEmpty() : "Library name cannot be null or empty";
         assert urlPattern != null && !urlPattern.isEmpty(): "URL Pattern cannot be null or empty";
@@ -56,13 +81,25 @@ public class JSLoader {
         Map<String, String> replacements = new HashMap<>();
         replacements.put("library", libraryName);
         replacements.put("version", version);
-        replacements.put("file", file);
-        String scriptUrl = replacePlaceholders(urlPattern, replacements);
 
-        // Load the script and mark the library as loaded for this UI
         UI ui = getUI(component);
-        ui.getPage().addJavaScript(scriptUrl);
+        if (file != null && file.length > 0) {
+            for (String f : file) {
+                replacements.put("file", f);
+                String fileUrl = replacePlaceholders(urlPattern, replacements);
+                if (f.toLowerCase().endsWith(".css")) {
+                    ui.getPage().addStyleSheet(fileUrl);
+                } else {
+                    ui.getPage().addJavaScript(fileUrl);
+                }
+            }
+        } else {
+            // Load the script and mark the library as loaded for this UI
+            String scriptUrl = replacePlaceholders(urlPattern, replacements);
+            ui.getPage().addJavaScript(scriptUrl);
+        }
         setLoadedVersion(ui,libraryName,version);
+
     }
 
     /** Returns the version of the library that has been loaded for the given UI.
@@ -110,9 +147,14 @@ public class JSLoader {
      * @param component       the UI instance to load the library for
      * @param libraryName     the name of the library to load
      * @param version         the version of the library to load
+     * @param libraryFile     the file(s) to load or null
      */
-    public static void loadUnpkg(Component component, String libraryName, String version) {
-        load(component,libraryName,version, null, URL_PATTERN_UNPKGCOM);
+    public static void loadUnpkg(Component component, String libraryName, String version, String... libraryFile) {
+        if (libraryFile != null && libraryFile.length > 0) {
+            loadFiles(component,URL_PATTERN_UNPKGCOM_FILES,libraryName,version,libraryFile);
+        } else {
+            loadFiles(component,URL_PATTERN_UNPKGCOM,libraryName,version,libraryFile);
+        }
     }
 
     private static String replacePlaceholders(String baseUrlPattern, Map<String, String> replacements) {

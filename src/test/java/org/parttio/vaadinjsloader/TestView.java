@@ -52,7 +52,7 @@ public class TestView extends VerticalLayout {
         String version = "1.0";
         String file = "mylib.js";
         String urlPattern = "/{library}-{version}/{file}";
-        JSLoader.load(this, library, version, file, urlPattern);
+        JSLoader.loadFiles(this, urlPattern, library, version, file);
 
         // Check that the script is indeed loaded
         UI.getCurrent()
