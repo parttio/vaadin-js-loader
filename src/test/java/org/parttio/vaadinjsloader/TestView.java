@@ -17,7 +17,7 @@ public class TestView extends VerticalLayout {
         add(new H1("Addon test"));
         add(new Button("Load from cdnjs.com", this::loadLibraryCdnJs));
         add(new Button("Load from unpkg.com", this::loadLibraryUnpkg));
-        add(new Button("Load local", this::loadLibraryCustom));
+        add(new Button("Load local library", this::loadLibraryCustom));
     }
 
     private void loadLibraryCdnJs(ClickEvent<Button> buttonClickEvent) {

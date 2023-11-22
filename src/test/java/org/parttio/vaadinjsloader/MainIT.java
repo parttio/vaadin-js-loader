@@ -35,11 +35,11 @@ public class MainIT {
     }
 
     @Test
-    public void loacalLoads() {
+    public void localLoads() {
         try (Browser browser = playwright.chromium().launch(options)) { // <5>
             Page page = browser.newPage();
             page.navigate(url);
-            page.getByText("Load local").first().click();
+            page.getByText("Load local library").first().click();
             assertThat(page.getByText("loaded http://localhost")).isVisible(); // <8>
         }
     }
