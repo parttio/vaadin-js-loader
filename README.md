@@ -1,8 +1,8 @@
 # vaadin-js-loader
 
 Dynamic JavaScript loader for Vaadin. Can be used to dynamically load local JavaScript libraries, and also 
-supports loading JavaScript dynamically from cloud services like [cdnjs](https://cdnjs.com/)https://cdnjs.com/ 
-and [unpkg](https://www.unpkg.com/)https://www.unpkg.com/.
+supports loading JavaScript dynamically from cloud services like [cdnjs](https://cdnjs.com/) 
+and [unpkg](https://www.unpkg.com/).
 
 ## Installation
 
