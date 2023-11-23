@@ -10,7 +10,7 @@ and [unpkg](https://www.unpkg.com/)https://www.unpkg.com/.
 <dependency>
     <groupId>org.parttio</groupId>
     <artifactId>vaadin-js-loader</artifactId>
-    <version>0.9.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
