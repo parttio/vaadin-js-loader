@@ -1,7 +1,6 @@
 package org.parttio.vaadinjsloader;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.UI;
 
 import java.util.HashMap;
@@ -38,6 +37,7 @@ public class JSLoader {
      * @param libraryFile the JavaScript file to load or null
      * @deprecated Use {{@link #loadFiles(Component, String, String, String, String...)}} instead.
      */
+    @SuppressWarnings("JavadocLinkAsPlainText")
     public static void load(Component component, String libraryName, String version, String libraryFile, String urlPattern) {
         loadFiles(component, urlPattern, libraryName, version, libraryFile);
     }
@@ -58,6 +58,7 @@ public class JSLoader {
      * @param version     the version of the library to load
      * @param file        the files of the library to load
      */
+    @SuppressWarnings("JavadocLinkAsPlainText")
     public static void loadFiles(Component component, String urlPattern, String libraryName, String version, String... file) {
         assert component != null : "Component cannot be null";
         assert libraryName != null && !libraryName.isEmpty() : "Library name cannot be null or empty";
