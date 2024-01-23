@@ -1,0 +1,1 @@
+alert("loaded custom js from classpath");

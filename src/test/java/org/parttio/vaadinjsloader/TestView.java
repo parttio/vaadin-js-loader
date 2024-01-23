@@ -7,8 +7,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.material.Material;
 
 @Route
 public class TestView extends VerticalLayout {
@@ -18,6 +16,7 @@ public class TestView extends VerticalLayout {
         add(new Button("Load from cdnjs.com", this::loadLibraryCdnJs));
         add(new Button("Load from unpkg.com", this::loadLibraryUnpkg));
         add(new Button("Load local library", this::loadLibraryCustom));
+        add(new Button("Load library from classpath", this::loadLibraryFromClasspath));
     }
 
     private void loadLibraryCdnJs(ClickEvent<Button> buttonClickEvent) {
@@ -58,6 +57,19 @@ public class TestView extends VerticalLayout {
         UI.getCurrent()
                 .getPage()
                 .executeJs("return document.querySelector('script[src*=\"" + library + "\"]').src")
+                .then(src -> add(new Paragraph("script loaded "+src.asString())));
+    }
+
+    private void loadLibraryFromClasspath(ClickEvent<Button> buttonClickEvent) {
+        // Load some script
+        String libraryName = "jsresource";
+        String file = "jsresource.js";
+        JSLoader.loadJavaResource(UI.getCurrent(), TestView.class, libraryName, file);
+
+        // Check that the script is indeed loaded
+        UI.getCurrent()
+                .getPage()
+                .executeJs("return document.querySelector('script[src*=\"" + libraryName + "\"]').src")
                 .then(src -> add(new Paragraph("script loaded "+src.asString())));
     }
 }

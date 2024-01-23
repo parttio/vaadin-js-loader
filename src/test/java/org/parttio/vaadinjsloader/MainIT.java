@@ -43,4 +43,14 @@ public class MainIT {
             assertThat(page.getByText("loaded http://localhost")).isVisible(); // <8>
         }
     }
+
+    @Test
+    public void localJavaResourceLoads() {
+        try (Browser browser = playwright.chromium().launch(options)) { // <5>
+            Page page = browser.newPage();
+            page.navigate(url);
+            page.getByText("Load library from classpath").first().click();
+            assertThat(page.getByText("loaded http://localhost")).isVisible(); // <8>
+        }
+    }
 }
