@@ -2,7 +2,11 @@ package org.parttio.vaadinjsloader;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.RequestHandler;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +23,9 @@ public class JSLoader {
     public static final String URL_PATTERN_UNPKGCOM = "https://unpkg.com/{library}@{version}";
 
     public static final String URL_PATTERN_UNPKGCOM_FILES = "https://unpkg.com/{library}@{version}/{file}";
+
+    /** Public path used to serve the local Java classpath resources. */
+    public static final String PUBLIC_JAVA_RESOURCE_PATH = "resources/";
 
     /**
      * Loads a JavaScript and CSS files dynamically from given URL.
@@ -151,6 +158,87 @@ public class JSLoader {
             loadFiles(component, URL_PATTERN_UNPKGCOM_FILES, libraryName, version, libraryFile);
         } else {
             loadFiles(component, URL_PATTERN_UNPKGCOM, libraryName, version, libraryFile);
+        }
+    }
+
+    /** Load library from Java resources.
+     *  Useful when loading JavaScript and CSS resources e.g. from Maven's <code>src/main/resources</code> folder.
+     *  Effectively uses <code>Class.getResourceAsStream()</code>.
+     *
+     * @param ui The UI where we are loading the resources.
+     * @param cls Class to load resources from using <code>getResourceAsStream</code>.
+     * @param libraryName Name of the library. This is used to avoid loading twice.
+     * @param files The files to load for this library. Supports .js and .css.
+
+     * @see Class#getResourceAsStream(String)
+     * @see #PUBLIC_JAVA_RESOURCE_PATH
+     */
+    public static void loadJavaResource(UI ui, Class<?> cls, String libraryName, String... files) {
+
+        if (JSLoader.isLoaded(ui, libraryName)) {
+            return;
+        }
+
+        JSLoader.loadFiles(ui, PUBLIC_JAVA_RESOURCE_PATH +"{file}", "idle", "latest", files);
+
+        RequestHandler requestHandler = (session, request, response) -> {
+            if (!request.getPathInfo().contains(PUBLIC_JAVA_RESOURCE_PATH)) {
+                return false;
+            }
+
+            String resourceName = request.getPathInfo()
+                    .substring(request.getPathInfo()
+                            .indexOf(PUBLIC_JAVA_RESOURCE_PATH)+PUBLIC_JAVA_RESOURCE_PATH.length());
+            if (Arrays.asList(files).contains(resourceName)) {
+
+                // Get the resource as a stream
+                InputStream resourceStream = cls.getResourceAsStream(resourceName);
+                if (resourceStream == null) {
+                    // Handle the case where resource is not found
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Failed to load file.");
+                    return true;
+                }
+                try (resourceStream) {
+
+                    response.setContentType(getContentTypeForFileExtension(resourceName));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    resourceStream.transferTo(response.getOutputStream());
+                } catch (Exception e) {
+                    try {
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to load file.");
+                    } catch (Exception e2) {
+                        // most likely header already sent
+                    }
+                    return true;
+                }
+
+                return true;
+            }
+            return false;
+        };
+
+        // Vaadin's request handler (un-)registration magic
+        ui.getElement().getNode().runWhenAttached(ui2 -> ui2.beforeClientResponse(ui2, ctx -> {
+            ctx.getUI().getSession().addRequestHandler(requestHandler);
+            ui2.getElement().getNode().addDetachListener(() -> {
+                ctx.getUI().getSession().removeRequestHandler(requestHandler);
+            });
+        }));
+    }
+
+    /** Utility to get content type for a file extension.
+     *  Currently only supports .js, .css and .txt.
+     *
+     * @param resourceName Name of the resource.
+     * @return Content type for the resource.
+     */
+    private static String getContentTypeForFileExtension(String resourceName) {
+        if (resourceName.endsWith(".js")) {
+            return "application/javascript";
+        } else if (resourceName.endsWith(".css")) {
+            return "text/css";
+        } else {
+            return "text/plain";
         }
     }
 
