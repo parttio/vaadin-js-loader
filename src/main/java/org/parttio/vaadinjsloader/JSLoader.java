@@ -7,8 +7,8 @@ import com.vaadin.flow.component.UI;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Dynamic JavaScript library loader for Vaadin.
- *
+/**
+ * Dynamic JavaScript library loader for Vaadin.
  */
 public class JSLoader {
 
@@ -22,50 +22,46 @@ public class JSLoader {
     public static final String URL_PATTERN_UNPKGCOM_FILES = "https://unpkg.com/{library}@{version}/{file}";
 
     /**
-     * Loads a JavaScript and CSS files dynamically from given CDN URL.
+     * Loads a JavaScript and CSS files dynamically from given URL.
+     * <p>
+     * Pattern is used to construct the URL for the library. The pattern can
+     * contain named placeholders <code>{library}</code>for the library name and <code>{version}</code> for the version. The
+     * placeholders are replaced with the actual values before the URL is loaded.
+     * <p>
+     * E.g. for unpkg.com:
+     * <code>https://unpkg.com/{library}@{version}/dist/{library}</code>
      *
-     *  Pattern is used to construct the URL for the library. The pattern can
-     *  contain named placeholders <code>{library}</code>for the library name and <code>{version}</code> for the version. The
-     *  placeholders are replaced with the actual values before the URL is
-     *  loaded.
-     *
-     *  E.g. for unpkg.com:
-     *  <code>https://unpkg.com/{library}@{version}/dist/{library}</code>
-     *
-     * @deprecated Use {{@link #loadFiles(Component, String, String, String, String...)}} instead.
-     *
-     * @param component       the UI instance to load the library for
+     * @param component   the UI instance to load the library for
      * @param urlPattern  the base URL pattern to use for loading the library
-     * @param libraryName     the name of the library to load
-     * @param version         the version of the library to load
-     * @param libraryFile     the JavaScript file to load or null
+     * @param libraryName the name of the library to load
+     * @param version     the version of the library to load
+     * @param libraryFile the JavaScript file to load or null
+     * @deprecated Use {{@link #loadFiles(Component, String, String, String, String...)}} instead.
      */
-    public static void load(Component component, String libraryName, String version,  String libraryFile, String urlPattern) {
-        loadFiles(component,urlPattern,libraryName, version, libraryFile);
+    public static void load(Component component, String libraryName, String version, String libraryFile, String urlPattern) {
+        loadFiles(component, urlPattern, libraryName, version, libraryFile);
     }
 
     /**
-     * Loads a JavaScript and CSS files dynamically from given CDN URL.
+     * Loads a JavaScript and CSS files dynamically from given URL.
+     * <p>
+     * Pattern is used to construct the URL for the library. The pattern can
+     * contain named placeholders <code>{library}</code>for the library name and <code>{version}</code> for the version. The
+     * placeholders are replaced with the actual values before the URL is loaded.
+     * <p>
+     * E.g. for unpkg.com:
+     * <code>https://unpkg.com/{library}@{version}/dist/{library}</code>
      *
-     *  Pattern is used to construct the URL for the library. The pattern can
-     *  contain named placeholders <code>{library}</code>for the library name and <code>{version}</code> for the version. The
-     *  placeholders are replaced with the actual values before the URL is
-     *  loaded.
-     *
-     *  E.g. for unpkg.com:
-     *  <code>https://unpkg.com/{library}@{version}/dist/{library}</code>
-     *
-     *
-     * @param component       the UI instance to load the library for
+     * @param component   the UI instance to load the library for
      * @param urlPattern  the base URL pattern to use for loading the library
-     * @param libraryName     the name of the library to load
-     * @param version         the version of the library to load
-     * @param file            the files of the library to load
+     * @param libraryName the name of the library to load
+     * @param version     the version of the library to load
+     * @param file        the files of the library to load
      */
     public static void loadFiles(Component component, String urlPattern, String libraryName, String version, String... file) {
         assert component != null : "Component cannot be null";
         assert libraryName != null && !libraryName.isEmpty() : "Library name cannot be null or empty";
-        assert urlPattern != null && !urlPattern.isEmpty(): "URL Pattern cannot be null or empty";
+        assert urlPattern != null && !urlPattern.isEmpty() : "URL Pattern cannot be null or empty";
 
         // If no version was specified use 'latest'
         if (version == null || version.isEmpty()) {
@@ -73,7 +69,7 @@ public class JSLoader {
         }
 
         // Check if the library has already been loaded for this UI
-        if (isLoaded(component,libraryName)) {
+        if (isLoaded(component, libraryName)) {
             return;
         }
 
@@ -98,62 +94,62 @@ public class JSLoader {
             String scriptUrl = replacePlaceholders(urlPattern, replacements);
             ui.getPage().addJavaScript(scriptUrl);
         }
-        setLoadedVersion(ui,libraryName,version);
+        setLoadedVersion(ui, libraryName, version);
 
     }
 
-    /** Returns the version of the library that has been loaded for the given UI.
+    /**
+     * Returns the version of the library that has been loaded for the given UI.
      *
      * @param component the UI instance to check
-     * @param library the name of the library to check
+     * @param library   the name of the library to check
      * @return the version of the library that has been loaded for the given UI
      */
     public static String getLoadedVersion(Component component, String library) {
-        String propertyKey = "loaded-"+library;
+        String propertyKey = "loaded-" + library;
         return getUI(component).getElement().getProperty(propertyKey);
     }
 
     /**
      * Loads a minified JavaScript library dynamically from cdnjs.com.
      *
+     * @param component   the UI instance to load the library for
+     * @param libraryName the name of the library to load
+     * @param version     the version of the library to load
      * @see #loadCdnjs(Component, String, String, boolean)
-     *
-     * @param component              the UI instance to load the library for
-     * @param libraryName     the name of the library to load
-     * @param version         the version of the library to load
      */
     public static void loadCdnjs(Component component, String libraryName, String version) {
-        load(component,libraryName,version,libraryName+".min.js", CDNJS_MIN);
+        load(component, libraryName, version, libraryName + ".min.js", CDNJS_MIN);
     }
 
     /**
      * Loads a JavaScript library dynamically from cdnjs.com.
      *
-     * @param component              the UI instance to load the library for
-     * @param libraryName     the name of the library to load
-     * @param version         the version of the library to load
+     * @param component   the UI instance to load the library for
+     * @param libraryName the name of the library to load
+     * @param version     the version of the library to load
      */
     public static void loadCdnjs(Component component, String libraryName, String version, boolean minified) {
         if (minified) {
-            load(component,libraryName,version,null, CDNJS_MIN);
+            load(component, libraryName, version, null, CDNJS_MIN);
         } else {
-            load(component,libraryName,version,null, CDNJS);
+            load(component, libraryName, version, null, CDNJS);
         }
     }
 
     /**
      * Loads a JavaScript library dynamically from unpkg.com.
      *
-     * @param component       the UI instance to load the library for
-     * @param libraryName     the name of the library to load
-     * @param version         the version of the library to load
-     * @param libraryFile     the file(s) to load or null
+     * @param component   the UI instance to load the library for
+     * @param libraryName the name of the library to load
+     * @param version     the version of the library to load
+     * @param libraryFile the file(s) to load or null
      */
     public static void loadUnpkg(Component component, String libraryName, String version, String... libraryFile) {
         if (libraryFile != null && libraryFile.length > 0) {
-            loadFiles(component,URL_PATTERN_UNPKGCOM_FILES,libraryName,version,libraryFile);
+            loadFiles(component, URL_PATTERN_UNPKGCOM_FILES, libraryName, version, libraryFile);
         } else {
-            loadFiles(component,URL_PATTERN_UNPKGCOM,libraryName,version,libraryFile);
+            loadFiles(component, URL_PATTERN_UNPKGCOM, libraryName, version, libraryFile);
         }
     }
 
@@ -172,28 +168,30 @@ public class JSLoader {
     }
 
     private static void setLoadedVersion(UI ui, String library, String version) {
-        String propertyKey = "loaded-"+library;
+        String propertyKey = "loaded-" + library;
         ui.getElement().setProperty(propertyKey, version);
     }
 
-    /** Check if the given library has been loaded for the UI.
+    /**
+     * Check if the given library has been loaded for the UI.
      *
      * @param component the UI instance to check
-     * @param library the name of the library to check
+     * @param library   the name of the library to check
      * @return true if the given library has been loaded for the given UI
      */
     public static boolean isLoaded(Component component, String library) {
-        return getLoadedVersion(component,library) != null;
+        return getLoadedVersion(component, library) != null;
     }
 
-    /** Check if the given library and version has been loaded for the UI.
+    /**
+     * Check if the given library and version has been loaded for the UI.
      *
      * @param component the UI instance to check
-     * @param library the name of the library to check
-     * @param version the version of the library to check
+     * @param library   the name of the library to check
+     * @param version   the version of the library to check
      * @return true if the given library and version has been loaded for the given UI
      */
     public static boolean isLoaded(Component component, String library, String version) {
-        return version != null && version.equals(getLoadedVersion(component,library));
+        return version != null && version.equals(getLoadedVersion(component, library));
     }
 }
