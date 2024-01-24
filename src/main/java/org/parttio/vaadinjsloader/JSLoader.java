@@ -167,7 +167,7 @@ public class JSLoader {
      *
      * @param ui The UI where we are loading the resources.
      * @param cls Class to load resources from using <code>getResourceAsStream</code>.
-     * @param libraryName Name of the library. This is used to avoid loading twice.
+     * @param libraryName Name of the library used as part of URL. This is also used to avoid loading twice.
      * @param files The files to load for this library. Supports .js and .css.
 
      * @see Class#getResourceAsStream(String)
@@ -179,10 +179,10 @@ public class JSLoader {
             return;
         }
 
-        JSLoader.loadFiles(ui, PUBLIC_JAVA_RESOURCE_PATH +"{file}", "idle", "latest", files);
+        JSLoader.loadFiles(ui, PUBLIC_JAVA_RESOURCE_PATH +"{library}/{file}", libraryName, "latest", files);
 
         RequestHandler requestHandler = (session, request, response) -> {
-            if (!request.getPathInfo().contains(PUBLIC_JAVA_RESOURCE_PATH)) {
+            if (!request.getPathInfo().contains(PUBLIC_JAVA_RESOURCE_PATH+libraryName)) {
                 return false;
             }
 
@@ -207,7 +207,7 @@ public class JSLoader {
                     try {
                         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to load file.");
                     } catch (Exception e2) {
-                        // most likely header already sent
+                        // Ignored. Likely header already sent.
                     }
                     return true;
                 }
