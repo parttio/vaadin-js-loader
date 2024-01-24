@@ -2,3 +2,5 @@
 src/main/dev-bundle
 frontend
 vaadin-javascript-loader.iml
+release.properties
+pom.xml.releaseBackup
