@@ -2,11 +2,12 @@
 
 The Vaadin Dynamic JavaScript Loader imports JavaScript libraries from the Java classpath, web resources, and external URLs. It also supports integration of JavaScript from cloud services like [cdnjs](https://cdnjs.com/) and [unpkg](https://www.unpkg.com/) in Vaadin applications.
 
-And why? This is complentary and similar to Vaadin's built in `@JavaScript` annotation with few differences and benefits: 
+Why? This is complentary and similar to Vaadin's built in `@JavaScript` annotation with few differences and benefits: 
 
 - **Built-in bookkeeping**: Loads a library only once per UI and check the version of the loaded library.
 - **URL template-based syntax**: Atomically load multiple files/resources from a single library.
 - **Fully dynamic loading**: Allows runtime configuration, loading, and checks in the application. You can even let users choose what to load and when (but be careful with that, please...)
+- **Load script from classpath**: In addition to public web resources, can load scripts also from Java resources and classpath (`@JavaScript` support only web resources)
 - **Component subclassing**: Due to the fully dynamic nature, it is possible to change and override the loading behavior in Java component subclasses. This is handy e.g. if there is an update to the loaded JavaScript library.
 - **Built-in CDN support**: In addition to local resources, load from cdnjs.com and unpkg.com. Handy for quick prototypes.
 - **CSS loading support**: In addition to JS, import CSS resources from the same library.
