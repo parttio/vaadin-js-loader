@@ -53,11 +53,18 @@ public class TestView extends VerticalLayout {
         String urlPattern = "/{library}-{version}/{file}";
         JSLoader.loadFiles(this, urlPattern, library, version, file);
 
-        // Check that the script is indeed loaded
+        // Check that the script tag is included
         UI.getCurrent()
                 .getPage()
                 .executeJs("return document.querySelector('script[src*=\"" + library + "\"]').src")
                 .then(src -> add(new Paragraph("script loaded "+src.asString())));
+
+        // Check that the script is actually loaded and executed
+        UI.getCurrent()
+                .getPage()
+                .executeJs("return document.querySelector('#mylib').textContent")
+                .then(t -> add(new Paragraph("script said: "+t.asString())));
+
     }
 
     private void loadLibraryFromClasspath(ClickEvent<Button> buttonClickEvent) {
@@ -66,10 +73,17 @@ public class TestView extends VerticalLayout {
         String file = "jsresource.js";
         JSLoader.loadJavaResource(UI.getCurrent(), TestView.class, libraryName, file);
 
-        // Check that the script is indeed loaded
+        // Check that the script tag is included
         UI.getCurrent()
                 .getPage()
                 .executeJs("return document.querySelector('script[src*=\"" + libraryName + "\"]').src")
                 .then(src -> add(new Paragraph("script loaded "+src.asString())));
+
+        // Check that the script is actually loaded and executed
+        UI.getCurrent()
+                .getPage()
+                .executeJs("return document.querySelector('#jsresource').textContent")
+                .then(t -> add(new Paragraph("script said: "+t.asString())));
+
     }
 }

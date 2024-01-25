@@ -41,6 +41,7 @@ public class MainIT {
             page.navigate(url);
             page.getByText("Load local library").first().click();
             assertThat(page.getByText("loaded http://localhost")).isVisible(); // <8>
+            assertThat(page.getByText("script said: Hello from mylib.js")).isVisible(); // <8>
         }
     }
 
@@ -51,6 +52,7 @@ public class MainIT {
             page.navigate(url);
             page.getByText("Load library from classpath").first().click();
             assertThat(page.getByText("loaded http://localhost")).isVisible(); // <8>
+            assertThat(page.getByText("script said: Hello from jsresource.js")).isVisible(); // <8>
         }
     }
 }
