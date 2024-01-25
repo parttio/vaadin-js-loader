@@ -179,8 +179,10 @@ public class JSLoader {
             return;
         }
 
+        // Load files
         JSLoader.loadFiles(ui, PUBLIC_JAVA_RESOURCE_PATH +"{library}/{file}", libraryName, "latest", files);
 
+        // Handle resource load requests
         RequestHandler requestHandler = (session, request, response) -> {
             if (!request.getPathInfo().contains(PUBLIC_JAVA_RESOURCE_PATH+libraryName)) {
                 return false;
@@ -188,7 +190,7 @@ public class JSLoader {
 
             String resourceName = request.getPathInfo()
                     .substring(request.getPathInfo()
-                            .indexOf(PUBLIC_JAVA_RESOURCE_PATH)+PUBLIC_JAVA_RESOURCE_PATH.length());
+                            .indexOf(PUBLIC_JAVA_RESOURCE_PATH)+(PUBLIC_JAVA_RESOURCE_PATH+libraryName+"/").length());
             if (Arrays.asList(files).contains(resourceName)) {
 
                 // Get the resource as a stream
