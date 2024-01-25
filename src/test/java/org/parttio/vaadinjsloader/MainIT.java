@@ -11,7 +11,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 public class MainIT {
 
     static Playwright playwright = Playwright.create(); // <4>
-    private String url = "http://localhost:8099/test";
+    private String url = "http://localhost:8099/test/";
     private BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(true);
 
     @Test
