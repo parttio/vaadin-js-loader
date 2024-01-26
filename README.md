@@ -9,9 +9,9 @@ This tool serves as a complementary feature to Vaadin's `@JavaScript` annotation
 
 2. **URL Template-Based Syntax:** Allows atomic loading of multiple files or resources from a single library.
 
-3. **Fully Dynamic Loading:** Enables runtime configuration and loading for greater flexibility. It allows user-driven loading processes, though this should be managed cautiously.
+3. **Fully Dynamic Loading:** Enables runtime configuration and loading for greater flexibility.
 
-4. **Load Script from Classpath:** Unlike @JavaScript, which only supports web resources, this tool can also load scripts from Java resources and the classpath.
+4. **Load Script from Classpath:** Unlike `@JavaScript`, which only supports web resources, this tool can also load scripts from Java resources and the classpath.
 
 5. **Component Subclassing:** Due to its dynamic nature, it is possible to modify and override loading behavior in Java component subclasses, particularly useful for updating JavaScript libraries.
 
