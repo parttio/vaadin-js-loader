@@ -1,16 +1,23 @@
 # Dynamic JavaScript loader for Vaadin
 
-The Vaadin Dynamic JavaScript Loader imports JavaScript libraries from the Java classpath, web resources, and external URLs. It also supports integration of JavaScript from cloud services like [cdnjs](https://cdnjs.com/) and [unpkg](https://www.unpkg.com/) in Vaadin applications.
+The Vaadin Dynamic JavaScript Loader enables the import of JavaScript libraries from the Java classpath, web resources, and external URLs. It particularly supports integration with cloud services like [cdnjs](https://cdnjs.com/) and [unpkg](https://www.unpkg.com/) in Vaadin applications.
 
-Why? This is complentary and similar to Vaadin's built in `@JavaScript` annotation with few differences and benefits: 
+## Why Use It?
+This tool serves as a complementary feature to Vaadin's `@JavaScript` annotation, with several key benefits:
 
-- **Built-in bookkeeping**: Loads a library only once per UI and check the version of the loaded library.
-- **URL template-based syntax**: Atomically load multiple files/resources from a single library.
-- **Fully dynamic loading**: Allows runtime configuration, loading, and checks in the application. You can even let users choose what to load and when (but be careful with that, please...)
-- **Load script from classpath**: In addition to public web resources, can load scripts also from Java resources and classpath (`@JavaScript` support only web resources)
-- **Component subclassing**: Due to the fully dynamic nature, it is possible to change and override the loading behavior in Java component subclasses. This is handy e.g. if there is an update to the loaded JavaScript library.
-- **Built-in CDN support**: In addition to local resources, load from cdnjs.com and unpkg.com. Handy for quick prototypes.
-- **CSS loading support**: In addition to JS, import CSS resources from the same library.
+1. **Built-in Bookkeeping:** Ensures a library is loaded only once per UI and checks the version.
+
+2. **URL Template-Based Syntax:** Allows atomic loading of multiple files or resources from a single library.
+
+3. **Fully Dynamic Loading:** Enables runtime configuration and loading for greater flexibility. It allows user-driven loading processes, though this should be managed cautiously.
+
+4. **Load Script from Classpath:** Unlike @JavaScript, which only supports web resources, this tool can also load scripts from Java resources and the classpath.
+
+5. **Component Subclassing:** Due to its dynamic nature, it is possible to modify and override loading behavior in Java component subclasses, particularly useful for updating JavaScript libraries.
+
+6. **Built-in CDN Support:** Supports loading from cdnjs.com and unpkg.com, ideal for quick prototyping.
+
+7. **CSS Loading Support:** Capable of importing CSS resources from the same library, in addition to JavaScript.
 
 
 ## Installation
