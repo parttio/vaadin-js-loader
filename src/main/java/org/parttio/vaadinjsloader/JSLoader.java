@@ -26,6 +26,7 @@ public class JSLoader {
 
     /** Public path used to serve the local Java classpath resources. */
     public static final String PUBLIC_JAVA_RESOURCE_PATH = "resources/";
+    private static final Map<String, String> loaded = new HashMap<>();
 
     /**
      * Loads a JavaScript and CSS files dynamically from given URL.
@@ -114,8 +115,7 @@ public class JSLoader {
      * @return the version of the library that has been loaded for the given UI
      */
     public static String getLoadedVersion(Component component, String library) {
-        String propertyKey = "loaded-" + library;
-        return getUI(component).getElement().getProperty(propertyKey);
+        return loaded.get(getUI(component).getUIId()+"_"+library);
     }
 
     /**
@@ -259,8 +259,8 @@ public class JSLoader {
     }
 
     private static void setLoadedVersion(UI ui, String library, String version) {
-        String propertyKey = "loaded-" + library;
-        ui.getElement().setProperty(propertyKey, version);
+        loaded.put(ui.getUIId()+"_"+library,version);
+        ui.getPage().executeJs("window.vaadinjsloader = window.vaadinjsloader || {}; window.vaadinjsloader[$0] = $1; return window.vaadinjsloader;", library, version);
     }
 
     /**
