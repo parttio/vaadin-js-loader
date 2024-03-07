@@ -94,6 +94,9 @@ public class JSLoader {
                 String fileUrl = replacePlaceholders(urlPattern, replacements);
                 if (f.toLowerCase().endsWith(".css")) {
                     ui.getPage().addStyleSheet(fileUrl);
+                } else if (f.toLowerCase().endsWith(".mjs")) {
+                    ui.getPage().addJsModule(fileUrl);
+                    importModuleExports(ui, libraryName, fileUrl);
                 } else {
                     ui.getPage().addJavaScript(fileUrl);
                 }
@@ -101,10 +104,19 @@ public class JSLoader {
         } else {
             // Load the script and mark the library as loaded for this UI
             String scriptUrl = replacePlaceholders(urlPattern, replacements);
-            ui.getPage().addJavaScript(scriptUrl);
+            if (scriptUrl.toLowerCase().endsWith(".mjs")) {
+                ui.getPage().addJsModule(scriptUrl);
+                importModuleExports(ui, libraryName, scriptUrl);
+            } else {
+                ui.getPage().addJavaScript(scriptUrl);
+            }
         }
         setLoadedVersion(ui, libraryName, version);
 
+    }
+
+    private static void importModuleExports( UI ui, String libraryName, String fileUrl) {
+        ui.getPage().executeJs("globalThis[$1]=globalThis[$1] || {}; var f = async () => { var m = await import($0); Object.keys(m).forEach(k => globalThis[$1][k] = m[k])}; return f();", fileUrl, libraryName);
     }
 
     /**
@@ -235,7 +247,7 @@ public class JSLoader {
      * @return Content type for the resource.
      */
     private static String getContentTypeForFileExtension(String resourceName) {
-        if (resourceName.endsWith(".js")) {
+        if (resourceName.endsWith(".js") || resourceName.endsWith(".mjs")) {
             return "application/javascript";
         } else if (resourceName.endsWith(".css")) {
             return "text/css";
