@@ -25,7 +25,7 @@ public class JSLoader {
     public static final String URL_PATTERN_UNPKGCOM_FILES = "https://unpkg.com/{library}@{version}/{file}";
 
     /** Public path used to serve the local Java classpath resources. */
-    public static final String PUBLIC_JAVA_RESOURCE_PATH = "resources/";
+    public static final String PUBLIC_JAVA_RESOURCE_PATH = "/resources/";
     private static final Map<String, String> loaded = new HashMap<>();
 
     /**
