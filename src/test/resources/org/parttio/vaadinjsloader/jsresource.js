@@ -1,5 +1,8 @@
 alert("loaded jsresource.js from classpath");
-const span = document.createElement("span");
-span.id = "jsresource";
-span.appendChild(document.createTextNode("Hello from jsresource.js"));
-document.body.appendChild(span);
+// Because this is constant, it will cause an error
+// if the script is loaded twice
+const jsresource_span = document.createElement("span");
+jsresource_span.id = "jsresource";
+jsresource_span.appendChild(document.createTextNode("Hello from jsresource.js"));
+document.body.appendChild(jsresource_span);
+
