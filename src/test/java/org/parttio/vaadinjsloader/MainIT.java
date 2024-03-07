@@ -55,4 +55,14 @@ public class MainIT {
             assertThat(page.getByText("script said: Hello from jsresource.js")).isVisible(); // <8>
         }
     }
+
+    @Test
+    public void localModuleLoads() {
+        try (Browser browser = playwright.chromium().launch(options)) { // <5>
+            Page page = browser.newPage();
+            page.navigate(url);
+            page.getByText("Load local module").first().click();
+            assertThat(page.getByText("module mymodule loaded from http://localhost")).isVisible(); // <8>
+        }
+    }
 }

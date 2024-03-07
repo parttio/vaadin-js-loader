@@ -76,6 +76,13 @@ public class TestView extends VerticalLayout {
         String file = "mymodule.mjs";
         String urlPattern = "/{library}-{version}/{file}";
         JSLoader.loadFiles(this, urlPattern, library, version, file);
+
+        // Check that the script tag is included
+        UI.getCurrent()
+                .getPage()
+                .executeJs("return document.querySelector('script[src*=\"" + library + "\"]').src")
+                .then(src -> add(new Paragraph("module "+library+" loaded from "+src.asString())));
+
         UI.getCurrent()
                 .getPage()
                 .executeJs("new mymodule.SampleClass2(); return 'mymodule ok';")
