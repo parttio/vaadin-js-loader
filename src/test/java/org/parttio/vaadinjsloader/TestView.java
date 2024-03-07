@@ -17,6 +17,7 @@ public class TestView extends VerticalLayout {
         add(new Button("Load from unpkg.com", this::loadLibraryUnpkg));
         add(new Button("Load local library", this::loadLibraryCustom));
         add(new Button("Load local module", this::loadLocalModule));
+        add(new Button("Load resource module", this::loadResourceModule));
         add(new Button("Load library from classpath", this::loadLibraryFromClasspath));
     }
 
@@ -86,6 +87,26 @@ public class TestView extends VerticalLayout {
         UI.getCurrent()
                 .getPage()
                 .executeJs("new mymodule.SampleClass2(); return 'mymodule ok';")
+                .then(t -> add(new Paragraph("script said: "+t.asString())));
+
+    }
+
+    private void loadResourceModule(ClickEvent<Button> buttonClickEvent) {
+        // Load some script
+        String library = "mymodule2";
+        String version = "1.0";
+        String file = "mymodule2.mjs";
+        JSLoader.loadJavaResource(UI.getCurrent(),this.getClass(), library, version, file);
+
+        // Check that the script tag is included
+        UI.getCurrent()
+                .getPage()
+                .executeJs("return document.querySelector('script[src*=\"" + library + "\"]').src")
+                .then(src -> add(new Paragraph("module "+library+" loaded from "+src.asString())));
+
+        UI.getCurrent()
+                .getPage()
+                .executeJs("new mymodule2.SampleClass2(); return 'mymodule2 ok';")
                 .then(t -> add(new Paragraph("script said: "+t.asString())));
 
     }
