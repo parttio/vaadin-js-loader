@@ -127,7 +127,8 @@ public class JSLoader {
      * @return the version of the library that has been loaded for the given UI
      */
     public static String getLoadedVersion(Component component, String library) {
-        return loaded.get(getUI(component).getUIId()+"_"+library);
+        UI ui = getUI(component);
+        return loaded.get(ui.getSession().getSession().getId()+ui.getUIId()+"_"+library);
     }
 
     /**
@@ -271,7 +272,7 @@ public class JSLoader {
     }
 
     private static void setLoadedVersion(UI ui, String library, String version) {
-        loaded.put(ui.getUIId()+"_"+library,version);
+        loaded.put(ui.getSession().getSession().getId()+ui.getUIId()+"_"+library,version);
         ui.getPage().executeJs("window.vaadinjsloader = window.vaadinjsloader || {}; window.vaadinjsloader[$0] = $1; return window.vaadinjsloader;", library, version);
     }
 

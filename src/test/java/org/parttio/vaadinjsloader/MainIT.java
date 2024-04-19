@@ -75,4 +75,20 @@ public class MainIT {
             assertThat(page.getByText("module mymodule2 loaded from http://localhost")).isVisible(); // <8>
         }
     }
+
+    @Test
+    public void testWithTwoBrowsers() {
+        try (Browser browser1 = playwright.chromium().launch(options)) { // <5>
+            try (Browser browser2 = playwright.chromium().launch(options)) { // <5>
+                Page page1 = browser1.newPage();
+                Page page2 = browser2.newPage();
+                page1.navigate(url);
+                page2.navigate(url);
+                page1.getByText("Load from cdnjs.com").first().click();
+                page2.getByText("Load from cdnjs.com").first().click();
+                assertThat(page1.getByText("loaded https://cdnjs")).isVisible(); // <8>
+                assertThat(page2.getByText("loaded https://cdnjs")).isVisible(); // <8>
+            }
+        }
+    }
 }
