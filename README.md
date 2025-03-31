@@ -26,7 +26,7 @@ This tool serves as a complementary feature to Vaadin's `@JavaScript` annotation
 <dependency>
     <groupId>org.parttio</groupId>
     <artifactId>vaadin-js-loader</artifactId>
-    <version>2.2.1</version>
+    <version>2.3.2</version>
 </dependency>
 ```
 
