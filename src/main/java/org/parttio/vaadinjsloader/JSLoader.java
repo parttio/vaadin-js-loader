@@ -2,10 +2,13 @@ package org.parttio.vaadinjsloader;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.server.RequestHandler;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,22 +96,22 @@ public class JSLoader {
                 replacements.put("file", f);
                 String fileUrl = replacePlaceholders(urlPattern, replacements);
                 if (f.toLowerCase().endsWith(".css")) {
-                    ui.getPage().addStyleSheet(fileUrl);
+                    addStyleSheet(ui.getPage(),fileUrl);
                 } else if (f.toLowerCase().endsWith(".mjs")) {
-                    ui.getPage().addJsModule(fileUrl);
+                    addJsModule(ui.getPage(),fileUrl);
                     importModuleExports(ui, libraryName, fileUrl);
                 } else {
-                    ui.getPage().addJavaScript(fileUrl);
+                    addJavaScript(ui.getPage(),fileUrl);
                 }
             }
         } else {
             // Load the script and mark the library as loaded for this UI
             String scriptUrl = replacePlaceholders(urlPattern, replacements);
             if (scriptUrl.toLowerCase().endsWith(".mjs")) {
-                ui.getPage().addJsModule(scriptUrl);
+                addJsModule(ui.getPage(),scriptUrl);
                 importModuleExports(ui, libraryName, scriptUrl);
             } else {
-                ui.getPage().addJavaScript(scriptUrl);
+                addJavaScript(ui.getPage(),scriptUrl);
             }
         }
         setLoadedVersion(ui, libraryName, version);
@@ -297,5 +300,27 @@ public class JSLoader {
      */
     public static boolean isLoaded(Component component, String library, String version) {
         return version != null && version.equals(getLoadedVersion(component, library));
+    }
+
+    /** Internal helpers for V25 forward compatibility. */
+    private static void addStyleSheet(Page page, String url) {
+        invokePageMethod(page, "addStyleSheet", url);
+    }
+
+    private static void addJsModule(Page page, String url) {
+        invokePageMethod(page, "addJsModule", url);
+    }
+
+    private static void addJavaScript(Page page, String url) {
+        invokePageMethod(page, "addJavaScript", url);
+    }
+
+    private static void invokePageMethod(Page page, String methodName, String url) {
+        try {
+            Method m = Page.class.getMethod(methodName, String.class); // public only, module-safe
+            m.invoke(page, url); // return ignored
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Failed to call " + methodName + "(String) on " + page.getClass(), e);
+        }
     }
 }
