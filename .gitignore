@@ -4,3 +4,5 @@ frontend
 vaadin-javascript-loader.iml
 release.properties
 pom.xml.releaseBackup
+.idea
+target
