@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/dynamic-javascript-loader-for-vaadin)
+
+
 # Dynamic JavaScript loader for Vaadin
 
 The Vaadin Dynamic JavaScript Loader enables the import of JavaScript libraries from the Java classpath, web resources, and external URLs. It particularly supports integration with cloud services like [cdnjs](https://cdnjs.com/) and [unpkg](https://www.unpkg.com/) in Vaadin applications.
